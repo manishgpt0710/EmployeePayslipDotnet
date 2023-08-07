@@ -1,0 +1,78 @@
+﻿@page
+@using System.Globalization;
+
+@model IndexModel
+@{
+    ViewData["Title"] = "Employee Monthly Payslip Page";
+}
+
+<div class="text-center">
+    <div class="row">
+        <form method="post" id="aspnetForm">
+            <div class="row">
+                <div class="form-group material-text-field col-md-6">
+                    <label asp-for="Input.FirstName"></label>
+                    <input asp-for="Input.FirstName" class="form-control" autofocus />
+                    <span asp-validation-for="Input.FirstName"></span>
+                </div>
+                <div class="form-group material-text-field col-md-6">
+                    <label asp-for="Input.LastName"></label>
+                    <input asp-for="Input.LastName" class="form-control" autofocus />
+                    <span asp-validation-for="Input.LastName"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group material-text-field col-md-6">
+                    <label asp-for="Input.AnnualSalary"></label>
+                    <input type="number" asp-for="Input.AnnualSalary" class="form-control" autofocus />
+                    <span asp-validation-for="Input.AnnualSalary"></span>
+                </div>
+                <div class="form-group material-text-field col-md-6">
+                    <label asp-for="Input.SuperRate"></label>
+                    <input type="number" asp-for="Input.SuperRate" class="form-control" autofocus />
+                    <span asp-validation-for="Input.SuperRate"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group material-select col-md-12">
+                    <label asp-for="Input.Period"></label>
+                    <select asp-for="Input.Period" asp-items="IndexModel.PeriodMonths" class="form-control"></select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6 offset-md-3 py-sm-4">
+                    <button type="submit" class="btn btn-primary btn-block mb-2" id="btnSubmit">Show Monthly Payslip</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    @if (IndexModel.Output.Count() > 0)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Pay Period</th>
+                    <th scope="col">Gross Income</th>
+                    <th scope="col">Income Tax</th>
+                    <th scope="col">Net Income</th>
+                    <th scope="col">Super</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var payslip in IndexModel.Output)
+                {
+                    <tr>
+                        <td>@payslip.Name</td>
+                        <td>@payslip.PayPeriod</td>
+                        <td>@payslip.GrossIncome</td>
+                        <td>@payslip.IncomeTax</td>
+                        <td>@payslip.NetIncome</td>
+                        <td>@payslip.Super</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
