@@ -35,18 +35,8 @@ namespace EmployeePayslip.Services
         public IEnumerable<EmployeePayslipResponse> PostEmployeePayslipData(EmployeePayslipModel employeePayslipModel)
         {
             string cacheKey = _configuration["EmployeePayslipDataCacheKey"] ?? "EmployeePayslipDataCacheKey";
-            decimal grossIncome = (decimal)employeePayslipModel.AnnualSalary / 12;
-            decimal incomeTax = _incomeTaxService.GetIncomeTax(employeePayslipModel.AnnualSalary);
 
-            var employeePayslipResponse = new EmployeePayslipResponse
-            {
-                Name = $"{employeePayslipModel.FirstName} {employeePayslipModel.LastName}",
-                PayPeriod = GetPayPeriod(employeePayslipModel.Period),
-                GrossIncome = Math.Round(grossIncome, 2),
-                IncomeTax = Math.Round(incomeTax, 2),
-                NetIncome = Math.Round(grossIncome, 2) - Math.Round(incomeTax, 2),
-                Super = Math.Round((grossIncome * (decimal)employeePayslipModel.SuperRate) / 100, 2)
-            };
+            var employeePayslipResponse = GetEmployeePayslipResponse(employeePayslipModel);
 
             return _employeePayslipManager.SetData(cacheKey, employeePayslipResponse);
         }
@@ -61,6 +51,22 @@ namespace EmployeePayslip.Services
 
             return $"{firstDateOfMonth.Day} {Enum.GetName(typeof(MonthNamesEnum), firstDateOfMonth.Month)} - " +
                    $"{lastDateOfMonth.Day} {Enum.GetName(typeof(MonthNamesEnum), lastDateOfMonth.Month)}";
+        }
+
+        private EmployeePayslipResponse GetEmployeePayslipResponse(EmployeePayslipModel employeePayslipModel)
+        {
+            decimal grossIncome = (decimal)employeePayslipModel.AnnualSalary / 12;
+            decimal incomeTax = _incomeTaxService.GetIncomeTax(employeePayslipModel.AnnualSalary);
+
+            return new EmployeePayslipResponse
+            {
+                Name = $"{employeePayslipModel.FirstName} {employeePayslipModel.LastName}",
+                PayPeriod = GetPayPeriod(employeePayslipModel.Period),
+                GrossIncome = Math.Round(grossIncome, 2),
+                IncomeTax = Math.Round(incomeTax, 2),
+                NetIncome = Math.Round(grossIncome, 2) - Math.Round(incomeTax, 2),
+                Super = Math.Round((grossIncome * (decimal)employeePayslipModel.SuperRate) / 100, 2)
+            };
         }
     }
 }
